@@ -13,6 +13,7 @@ target_sources(bsp
         dma/dma.c
         nvds/nvds_flash.c
         raw_flash/raw_flash_api.c
+        spi_i2s/spi_i2s.c
         time/systime.c
         trng/trng.c
         uart/log_uart.c
@@ -30,6 +31,7 @@ set(BSP_INCLUDE_REL_PATHS
     raw_flash
     reg
     rf
+    spi_i2s
     time
     trng
     uart

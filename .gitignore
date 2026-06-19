@@ -1,3 +1,8 @@
 cmake_build/
 tools/
 MSDK/app/_build_date.h
+MBL/project/cmake/bin/
+MSDK/projects/cmake/output/bin/
+scripts/images/image-all.bin
+scripts/images/image-ota.bin
+scripts/images/mbl.bin

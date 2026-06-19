@@ -56,8 +56,11 @@ OF SUCH DAMAGE.
 #ifdef CONFIG_AZURE_IOT_SUPPORT
 #include "azure_entry.h"
 #endif
+#ifdef CONFIG_VOICE_DEMO
+#include "voice_app.h"
+#endif
 
-/*!
+/*! 
     \brief      Init applications.
                 This function is called to initialize all the applications.
     \param[in]  none.
@@ -104,6 +107,9 @@ static void application_init(void)
 
 #ifdef CONFIG_AZURE_F527_DEMO_SUPPORT
     azure_task_start();
+#endif
+#ifdef CONFIG_VOICE_DEMO
+    voice_app_start();
 #endif
 }
 

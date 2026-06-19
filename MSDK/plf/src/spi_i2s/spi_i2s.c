@@ -57,6 +57,8 @@ static os_queue_t trans_q = NULL;
 static pcm_buf_info_t next_pcm_buf_info;
 
 static uint8_t buf_idx = 0;
+static volatile uint32_t spi_i2s_dma_irq_count;
+static volatile uint32_t spi_i2s_dma_queue_fail_count;
 
 #ifdef I2S_RECORD
 static os_queue_t rec_trans_q = NULL;
@@ -85,8 +87,10 @@ void spi_i2s_dma_irqhandler(void)
 {
     if (RESET != dma_interrupt_flag_get(SPI_DMA_CHNL, DMA_INT_FLAG_FTF)) {
         dma_interrupt_flag_clear(SPI_DMA_CHNL, DMA_INT_FLAG_FTF);
+        spi_i2s_dma_irq_count++;
         next_pcm_buf_info.pcm_addr = buf_idx;
         if (trans_q != NULL && sys_queue_write(&trans_q, (void *)&next_pcm_buf_info, 0, true) != 0) {
+            spi_i2s_dma_queue_fail_count++;
             printf("spi_i2s can't write data\r\n");
         }
 
@@ -186,7 +190,25 @@ static void spi_i2s_spi_config(void)
 
 static void spi_i2s_gpio_config(void)
 {
-#if CONFIG_BOARD == PLATFORM_BOARD_32VW55X_START
+#if defined(CONFIG_VOICE_AI_AUDIO_BOARD) && !defined(CONFIG_VOICE_I2S_START_PINS)
+    /* AI audio daughter board build: keep PB15/PA8 free for Type-C UART1 logs. */
+    gpio_af_set(GPIOA, GPIO_AF_2, GPIO_PIN_12);
+    gpio_mode_set(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO_PIN_12);
+    gpio_output_options_set(GPIOA, GPIO_OTYPE_PP, GPIO_OSPEED_MAX, GPIO_PIN_12);
+
+    gpio_af_set(GPIOB, GPIO_AF_3, GPIO_PIN_1);
+    gpio_mode_set(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO_PIN_1);
+    gpio_output_options_set(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_MAX, GPIO_PIN_1);
+
+    gpio_af_set(GPIOA, GPIO_AF_5, GPIO_PIN_2);
+    gpio_mode_set(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO_PIN_2);
+    gpio_output_options_set(GPIOA, GPIO_OTYPE_PP, GPIO_OSPEED_MAX, GPIO_PIN_2);
+
+    gpio_af_set(GPIOA, GPIO_AF_5, GPIO_PIN_1);
+    gpio_mode_set(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO_PIN_1);
+    gpio_output_options_set(GPIOA, GPIO_OTYPE_PP, GPIO_OSPEED_MAX, GPIO_PIN_1);
+
+#elif CONFIG_BOARD == PLATFORM_BOARD_32VW55X_START
     /*i2s clk Configure PA8(TIMER0 CH0 ) as alternate function*/
     gpio_af_set(GPIOA, GPIO_AF_1, GPIO_PIN_8);
     gpio_mode_set(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO_PIN_8);
@@ -275,7 +297,13 @@ static void spi_i2s_clk_timer_config(uint16_t prescaler, uint32_t period, uint32
 
     timer_counter_value_config(TIMER0, init_cnt);
 
-#if 0
+#if defined(CONFIG_VOICE_AI_AUDIO_BOARD) && !defined(CONFIG_VOICE_I2S_START_PINS)
+    /* CH3 configuration in PWM mode0,duty cycle 50% */
+    timer_channel_output_config(TIMER0, TIMER_CH_3, &timer_ocintpara);
+    timer_channel_output_pulse_value_config(TIMER0, TIMER_CH_3, period >> 1);
+    timer_channel_output_mode_config(TIMER0, TIMER_CH_3, TIMER_OC_MODE_PWM0);
+    timer_channel_output_shadow_config(TIMER0, TIMER_CH_3, TIMER_OC_SHADOW_DISABLE);
+#elif CONFIG_BOARD == PLATFORM_BOARD_32VW55X_START
     /* CH0 configuration in PWM mode0,duty cycle 50% */
     timer_channel_output_config(TIMER0, TIMER_CH_0, &timer_ocintpara);
     timer_channel_output_pulse_value_config(TIMER0, TIMER_CH_0, period >> 1);
@@ -330,7 +358,16 @@ static void spi_i2s_ws_timer_config(uint16_t prescaler, uint32_t period, uint32_
     timer_ocintpara.ocnidlestate = TIMER_OCN_IDLE_STATE_LOW;
 
 
-#if CONFIG_BOARD == PLATFORM_BOARD_32VW55X_START
+#if defined(CONFIG_VOICE_AI_AUDIO_BOARD) && !defined(CONFIG_VOICE_I2S_START_PINS)
+    timer_channel_output_config(TIMER2, TIMER_CH_2, &timer_ocintpara);
+
+    timer_counter_value_config(TIMER2, init_cnt);
+
+    /* CH2 configuration in PWM mode0,duty cycle 50% */
+    timer_channel_output_pulse_value_config(TIMER2, TIMER_CH_2, period >> 1);
+    timer_channel_output_mode_config(TIMER2, TIMER_CH_2, TIMER_OC_MODE_PWM0);
+    timer_channel_output_shadow_config(TIMER2, TIMER_CH_2, TIMER_OC_SHADOW_DISABLE);
+#elif CONFIG_BOARD == PLATFORM_BOARD_32VW55X_START
     timer_channel_output_config(TIMER2, TIMER_CH_0, &timer_ocintpara);
 
     timer_counter_value_config(TIMER2, init_cnt);
@@ -386,6 +423,7 @@ void spi_i2s_start_send(os_queue_t queue, uint32_t dma_addr0, uint32_t dma_addr1
     spi_enable();
     /* auto-reload preload enable */
     // TIMER_CTL0(TIMER0) |= (uint32_t)TIMER_CTL0_CEN;
+    timer_enable(TIMER2);
     timer_enable(TIMER0);
 
     //timer_enable(TIMER1);

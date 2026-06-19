@@ -33,6 +33,7 @@ OF SUCH DAMAGE.
 */
 
 #include <ctype.h>
+#include "app_cfg.h"
 #include "gd32vw55x.h"
 #include <stdio.h>
 #include "log_uart.h"

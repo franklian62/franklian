@@ -75,11 +75,15 @@ extern "C" {
 #define HCI_UART                UART2
 #endif          // CONFIG_PLATFORM_ASIC end
 #else /* CFG_BLE_HCI_MODE */
+#ifdef CONFIG_VOICE_DEMO
+#define LOG_UART                UART2
+#else
 #if defined(CONFIG_BOARD) && (CONFIG_BOARD == PLATFORM_BOARD_32VW55X_EVAL || CONFIG_BOARD == PLATFORM_BOARD_32VW55X_SONIC)
 #define LOG_UART                UART1
 #else
 #define LOG_UART                UART2
 #endif /* CONFIG_BOARD */
+#endif /* CONFIG_VOICE_DEMO */
 #endif /* CFG_BLE_HCI_MODE */
 
 #ifdef TRACE_UART

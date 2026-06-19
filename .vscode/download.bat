@@ -94,9 +94,9 @@ if /i "%TARGET%"=="MSDK" (
 
 REM Set OpenOCD config based on debugger
 if /i "%DEBUGGER%"=="GDLink" (
-    set CONFIG_FILE=!WORK_DIR!\MSDK\projects\eclipse\msdk\openocd_gdlink.cfg
+    set CONFIG_FILE=!WORK_DIR!\MSDK\projects\cmake\output\openocd_gdlink.cfg
 ) else if /i "%DEBUGGER%"=="JLink" (
-    set CONFIG_FILE=!WORK_DIR!\MSDK\projects\eclipse\msdk\openocd_jlink.cfg
+    set CONFIG_FILE=!WORK_DIR!\MSDK\projects\cmake\output\openocd_jlink.cfg
 )
 
 REM Convert backslashes to forward slashes for OpenOCD compatibility

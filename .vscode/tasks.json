@@ -229,14 +229,14 @@
                 "command": "${workspaceFolder}/tools/xpack-openocd-0.11.0-3_windows/bin/openocd.exe",
                 "args": [
                     "-f",
-                    "${workspaceFolder}/MSDK/projects/eclipse/msdk/openocd_gdlink.cfg"
+                    "${workspaceFolder}/MSDK/projects/cmake/output/openocd_gdlink.cfg"
                 ]
             },
             "linux": {
                 "command": "${workspaceFolder}/tools/xpack-openocd-0.11.0-3_linux/bin/openocd",
                 "args": [
                     "-f",
-                    "${workspaceFolder}/MSDK/projects/eclipse/msdk/openocd_gdlink.cfg"
+                    "${workspaceFolder}/MSDK/projects/cmake/output/openocd_gdlink.cfg"
                 ]
             },
             "presentation": {
@@ -267,14 +267,14 @@
                 "command": "${workspaceFolder}/tools/xpack-openocd-0.11.0-3_windows/bin/openocd.exe",
                 "args": [
                     "-f",
-                    "${workspaceFolder}/MSDK/projects/eclipse/msdk/openocd_jlink.cfg"
+                    "${workspaceFolder}/MSDK/projects/cmake/output/openocd_jlink.cfg"
                 ]
             },
             "linux": {
                 "command": "${workspaceFolder}/tools/xpack-openocd-0.11.0-3_linux/bin/openocd",
                 "args": [
                     "-f",
-                    "${workspaceFolder}/MSDK/projects/eclipse/msdk/openocd_jlink.cfg"
+                    "${workspaceFolder}/MSDK/projects/cmake/output/openocd_jlink.cfg"
                 ]
             },
             "presentation": {
@@ -297,6 +297,108 @@
                     "endsPattern": "^.*Listening on port.*"
                 }
             }
+        },
+        {
+            "label": "Run Program (JLink)",
+            "type": "process",
+            "windows": {
+                "command": "${workspaceFolder}/tools/xpack-openocd-0.11.0-3_windows/bin/openocd.exe",
+                "args": [
+                    "-f",
+                    "${workspaceFolder}/MSDK/projects/cmake/output/openocd_jlink.cfg",
+                    "-c",
+                    "reset run",
+                    "-c",
+                    "shutdown"
+                ]
+            },
+            "linux": {
+                "command": "${workspaceFolder}/tools/xpack-openocd-0.11.0-3_linux/bin/openocd",
+                "args": [
+                    "-f",
+                    "${workspaceFolder}/MSDK/projects/cmake/output/openocd_jlink.cfg",
+                    "-c",
+                    "reset run",
+                    "-c",
+                    "shutdown"
+                ]
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build Download Run (JLink)",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Build ALL",
+                "Download ALL (JLink)",
+                "Run Program (JLink)"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Debug Serial Monitor (COM5 115200)",
+            "type": "shell",
+            "windows": {
+                "command": "powershell",
+                "args": [
+                    "-NoProfile",
+                    "-ExecutionPolicy",
+                    "Bypass",
+                    "-File",
+                    "${workspaceFolder}/.vscode/serial-monitor.ps1",
+                    "-Port",
+                    "COM5",
+                    "-BaudRate",
+                    "115200"
+                ]
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "dedicated"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "UART Scan",
+            "type": "shell",
+            "windows": {
+                "command": "${workspaceFolder}/tools/official/GD32_Mass_Production_Tool/GD32MassProductionTool_CMD.exe",
+                "args": [
+                    "scan"
+                ]
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Download ALL (UART COM5)",
+            "type": "shell",
+            "args": [
+                "921600"
+            ],
+            "windows": {
+                "command": "${workspaceFolder}/.vscode/uart-download.bat"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "dedicated"
+            },
+            "problemMatcher": []
         }
     ]
 }

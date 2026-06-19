@@ -61,7 +61,21 @@ OF SUCH DAMAGE.
 
 #define CONFIG_BASECMD
 
-// #define CONFIG_SPI_I2S
+#define CONFIG_SPI_I2S
+#define I2S_AUDIO_DATA_FORMAT       1
+#define CONFIG_VOICE_DEMO
+#define CONFIG_VOICE_AI_AUDIO_BOARD
+#define CONFIG_VOICE_PROMPT_DANGER
+#define CONFIG_VOICE_DANGER_KEY_SIM
+// #define CONFIG_VOICE_TONE_TEST
+// #define CONFIG_VOICE_WIFI_STREAM
+
+#ifdef CONFIG_VOICE_DEMO
+#define VOICE_WIFI_SSID                "GD32Voice"
+#define VOICE_WIFI_PASSWORD            "12345678"
+#define VOICE_SERVER_IP                "192.168.137.1"
+#define VOICE_SERVER_PORT              5530
+#endif
 // #define CONFIG_SOFTAP_PROVISIONING
 
 // #define CONFIG_ATCMD

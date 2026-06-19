@@ -1,5 +1,10 @@
 # Welcome to the GD32VW55x Wi-Fi BLE SDK
 
+## Project handoff note
+
+For the GD32VW553 + GD32H759 voice warning integration, read
+[`TEAM_HANDOFF_VW553_H759.md`](TEAM_HANDOFF_VW553_H759.md) first. It describes the current voice demo, build/flash steps, verified hardware notes, and the next UART integration work for the teammate.
+
 Welcome to the GD32VW55x Wi-Fi BLE SDK.The GD32VW553 series MCU supports Wi-Fi 6 and Bluetooth LE 5.2 wireless connectivity. To fulfill the requirements of real-time processing and efficient communication, the GD32VW553 series MCU incorporates a new open-source instruction set architecture with a RISC-V processor core, boasting a maximum clock frequency of 160 MHz. The integrated 2.4 GHz Wi-Fi 6 RF module adheres to the IEEE 802.11ax standard and is backward compatible with the IEEE 802.11b/g/n standard, ensuring compatibility with different network environments.
 
 GD32VW553 series MCU：
