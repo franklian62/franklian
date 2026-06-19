@@ -9,6 +9,7 @@ set "CMAKE_GENERATOR=Unix Makefiles"
 set "DEFAULT_MAKEFLAGS=--output-sync=target"
 set "LOCAL_TOOLCHAIN_BIN=%SCRIPT_DIR%\tools\gd32vw55x_toolchain_windows\bin"
 set "LOCAL_OPENOCD_BIN=%SCRIPT_DIR%\tools\xpack-openocd-0.11.0-3_windows\bin"
+set "SEVEN_ZIP=%PROGRAMFILES%\7-Zip\7z.exe"
 
 REM set custom OpenOCD path
 ::set OPENOCD_PATH=path/to/openocd/bin
@@ -44,7 +45,13 @@ if EXIST "%LOCAL_TOOLCHAIN_BIN%\riscv-nuclei-elf-gcc.exe" (
 
 if EXIST "%SCRIPT_DIR%\tools\gd32vw55x_toolchain_windows.7z.001" (
     echo Unzipping gd32vw55x toolchain .......
-    "%PROGRAMFILES%\7-Zip\7z.exe" x "%SCRIPT_DIR%\tools\gd32vw55x_toolchain_windows.7z.001" -o"%SCRIPT_DIR%\tools"
+    if NOT EXIST "%SEVEN_ZIP%" (
+        echo Missing 7-Zip: %SEVEN_ZIP%
+        echo Install 7-Zip or manually extract tools\gd32vw55x_toolchain_windows.7z.001 into tools.
+        echo Expected compiler: %LOCAL_TOOLCHAIN_BIN%\riscv-nuclei-elf-gcc.exe
+        EXIT /B 1
+    )
+    "%SEVEN_ZIP%" x "%SCRIPT_DIR%\tools\gd32vw55x_toolchain_windows.7z.001" -o"%SCRIPT_DIR%\tools"
     if EXIST "%LOCAL_TOOLCHAIN_BIN%\riscv-nuclei-elf-gcc.exe" (
         echo Using repo toolchain path: %LOCAL_TOOLCHAIN_BIN%
         SET "PATH=%LOCAL_TOOLCHAIN_BIN%;%PATH%"
@@ -86,7 +93,13 @@ if EXIST "%LOCAL_OPENOCD_BIN%\openocd.exe" (
 
 if EXIST "%SCRIPT_DIR%\tools\xpack-openocd-0.11.0-3_windows.7z" (
     echo Unzipping gd32vw55x OpenOCD .......
-    "%PROGRAMFILES%\7-Zip\7z.exe" x "%SCRIPT_DIR%\tools\xpack-openocd-0.11.0-3_windows.7z" -o"%SCRIPT_DIR%\tools"
+    if NOT EXIST "%SEVEN_ZIP%" (
+        echo Missing 7-Zip: %SEVEN_ZIP%
+        echo Install 7-Zip or manually extract tools\xpack-openocd-0.11.0-3_windows.7z into tools.
+        echo Expected OpenOCD: %LOCAL_OPENOCD_BIN%\openocd.exe
+        EXIT /B 1
+    )
+    "%SEVEN_ZIP%" x "%SCRIPT_DIR%\tools\xpack-openocd-0.11.0-3_windows.7z" -o"%SCRIPT_DIR%\tools"
     if EXIST "%LOCAL_OPENOCD_BIN%\openocd.exe" (
         echo Using repo OpenOCD path: %LOCAL_OPENOCD_BIN%
         SET "PATH=%LOCAL_OPENOCD_BIN%;%PATH%"

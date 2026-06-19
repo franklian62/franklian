@@ -1,5 +1,9 @@
 cmake_build/
-tools/
+tools/*
+!tools/*.7z
+!tools/*.7z.*
+!tools/*.tar.gz
+!tools/*.tar.gz*
 MSDK/app/_build_date.h
 MBL/project/cmake/bin/
 MSDK/projects/cmake/output/bin/

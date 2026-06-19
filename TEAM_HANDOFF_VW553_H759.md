@@ -52,7 +52,39 @@ Equivalent PowerShell commands:
 .\tools\xpack-openocd-0.11.0-3_windows\bin\openocd.exe -f .\MSDK\projects\cmake\output\openocd_jlink.cfg -c "init; reset run; shutdown"
 ```
 
-The local `tools/` directory is ignored by git. If a fresh clone cannot build, install/copy the GD32VW55x Windows toolchain and OpenOCD tools following the official SDK README, or copy the same `tools/` folder from the working SDK package.
+### Toolchain Notes For A Fresh Clone
+
+This SDK does not track the extracted tool directories. A fresh clone may not contain:
+
+```text
+tools/gd32vw55x_toolchain_windows/bin/riscv-nuclei-elf-gcc.exe
+tools/xpack-openocd-0.11.0-3_windows/bin/openocd.exe
+```
+
+For Windows, keep these compressed packages under `tools/`:
+
+```text
+tools/gd32vw55x_toolchain_windows.7z.001
+tools/gd32vw55x_toolchain_windows.7z.002
+tools/gd32vw55x_toolchain_windows.7z.003
+tools/xpack-openocd-0.11.0-3_windows.7z
+```
+
+Then install 7-Zip and run:
+
+```powershell
+.\cmake_build.bat app
+```
+
+The script will auto-extract the Windows toolchain/OpenOCD packages into `tools/`.
+If 7-Zip is not installed at `C:\Program Files\7-Zip\7z.exe`, either install it there or manually extract:
+
+```text
+tools/gd32vw55x_toolchain_windows.7z.001 -> tools/gd32vw55x_toolchain_windows/
+tools/xpack-openocd-0.11.0-3_windows.7z -> tools/xpack-openocd-0.11.0-3_windows/
+```
+
+For Linux, keep the `tools/gd32vw55x_toolchain_linux.tar.gz00` through `tar.gz06` split files and `tools/xpack-openocd-0.11.0-3_linux.tar.gz`; `cmake_build.sh` will concatenate/extract them when needed.
 
 ## Voice Test
 
